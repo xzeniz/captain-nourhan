@@ -1,4 +1,6 @@
 ![LaunchScreenBackground](https://github.com/xzeniz/captain-nourhan/assets/154990831/af1897d4-43f4-4e18-a28d-504c0743cea4)
+
+### [Privacy Policy](policy.md)
 🧩 Set Sail on a Puzzle-Packed Pirate Adventure! 🏴‍☠️
 
 Avast ye, puzzle enthusiasts! Prepare for a brain-teasing voyage in our captivating game - "Cannon Conundrum: Pirate Puzzles"! Navigate the high seas with a clever crew of pirates as you tackle over 10 intricate worlds, each harboring 9 mind-bending levels full of diverse obstacles.
