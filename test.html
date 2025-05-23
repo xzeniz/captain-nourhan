@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>cocos web</title>
+    <style>
+      html,
+      body {
+        background: #000;
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        font-family: arial, pingfang sc, microsoft yahei, wenquanyi micro hei, sans-serif;
+      }
+      .content {
+        width: 80%;
+        padding: 0 10%;
+        min-height: 60%;
+        & > .title::before {
+          font-size: 40px;
+          line-height: 50px;
+        }
+        & > .line {
+          height: 3px;
+          width: 100%;
+          margin: 12px 0 28px;
+        }
+        & > #text {
+          font-size: 20px;
+          color: #999;
+          line-height: 25px;
+          text-wrap: wrap;
+          margin: 0;
+          & ul {
+            margin: 10px 0 0 0;
+            padding: 0 0 0 30px;
+          }
+          & li {
+            padding: 0 0 10px 0;
+          }
+        }
+        & > #debug {
+          display: none;
+          margin-top: 20px;
+          padding: 26px 26px 10px;
+          background-color: #191919;
+          border-radius: 5px;
+          color: #fff;
+          font-size: 16px;
+          &.show {
+            display: block;
+          }
+        }
+      }
+      .connecting {
+        & > .content {
+          & > .title::before {
+            content: "CONNECTING...";
+            color: #19bee6;
+          }
+          & > .line {
+            background-color: #19bee6;
+          }
+        }
+      }
+      .success {
+        & > .content {
+          & > .title::before {
+            content: "CONNECTED SUCCESSFULLY";
+            color: #14e691;
+          }
+          & > .line {
+            background-color: #14e691;
+          }
+        }
+      }
+      .retry {
+        & > .content {
+          & > .title::before {
+            content: "SITE UNREACHABLE, RETRY...";
+            color: #ff1928;
+          }
+          & > .line {
+            background-color: #ff1928;
+          }
+        }
+      }
+      .fail {
+        & > .content {
+          & > .title::before {
+            content: "SITE UNREACHABLE";
+            color: #ff1928;
+          }
+          & > .line {
+            background-color: #ff1928;
+          }
+        }
+      }
+      @media screen and (max-width: 767px) {
+        .content {
+          width: 90%;
+          padding: 0 5%;
+          min-height: 50%;
+          & > .title::before {
+            font-size: 25px;
+            line-height: 30px;
+          }
+          & > .line {
+            height: 2px;
+          }
+          & > #text {
+            font-size: 15px;
+            line-height: 20px;
+            & ul {
+              margin: 8px 0 0 0;
+              padding: 0 0 0 20px;
+            }
+          }
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="iframeID"></div>
+    <div id="text"></div>
+    <button type="button" onclick="onClick()">Trigger cocos to close webView</button>
+  </body>
+  <script>
+    let iframeWeb = document.getElementById("iframeID");
+
+    // ---------------browser-------need--------
+    window.addEventListener("message", function (e) {
+      var data = e.data; //e.data contains all the parameters you have
+      // passed, you can make your own judgment based on the parameters
+      console.log("--------------this is web message--------------", data);
+      setBackgroundColor(data);
+    });
+    // ---------------browser---------------
+    function setBackgroundColor(data) {
+      console.log("-------web--------data-------" + data);
+      window.isNative = data.isNative;
+    //   document.getElementsByTagName("body")[0].style.background = data.color;
+      document.getElementById("text").innerHTML = "this is cocos send msg color :" + data.color;
+
+      // setIframeSize(data)
+      document.getElementById("iframeID").innerHTML += data.content;
+      console.log("data", data.content);
+
+      //script
+      let es = document.createElement("script");
+      es.innerHTML = data.script;
+      document.body.append(es);
+
+      //style
+      let istyle = document.createElement("style");
+      istyle.innerHTML = data.style;
+      document.head.append(istyle);
+    }
+
+    function setIframeSize(data) {
+      if (data.isNative) {
+        //----------mobile---------
+        let cocosIframe = window.parent.document.documentElement;
+        console.log("-----mobile--web-------size------" + cocosIframe.clientWidth + "---" + cocosIframe.clientHeight);
+        iframeWeb.style.width = cocosIframe.clientWidth + "px";
+        iframeWeb.style.height = cocosIframe.clientHeight + "px";
+      } else {
+        //----------browser---------
+        console.log("----browser---web-------size------" + data.width + "---" + data.height);
+        iframeWeb.style.width = data.width + "px";
+        iframeWeb.style.height = data.height + "px";
+      }
+    }
+
+    function onClick(param) {
+      console.log("-------web--------onClick----->>cocos JS-------------", window.isNative);
+      if (window.isNative) {
+        //android or ios
+        document.location = "testkey://a=1&b=2";
+      } else {
+        // browser, send a message to cocos
+        parent.postMessage("------------hello!-----cocos---------", "*");
+      }
+    }
+  </script>
+</html>
